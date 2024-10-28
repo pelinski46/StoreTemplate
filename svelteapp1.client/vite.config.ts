@@ -41,6 +41,7 @@ export default defineConfig({
     plugins: [svelte()],
     resolve: {
         alias: {
+            $lib: path.resolve("./src/lib"),
             '@': fileURLToPath(new URL('./src', import.meta.url))
         }
     },
@@ -68,9 +69,8 @@ export default defineConfig({
             }
         },
         port: 5173,
-        https: {
-            key: fs.readFileSync(keyFilePath),
-            cert: fs.readFileSync(certFilePath),
-        }
+        https: 
+            false,
+        
     }
 })

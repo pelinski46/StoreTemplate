@@ -3,7 +3,7 @@
 "ServerUrl": "https://localhost:5173",
 "RedirectUrl": "",
 "LaunchCommand": "npm run dev",
-"WorkingDirectory": "/home/pablo/ASP.NET-Core-Svelte/SvelteApp1.Server/../svelteapp1.client",
+"WorkingDirectory": "C:\\Users\\Pablo\\RiderProjects\\StoreTemplate\\SvelteApp1.Server\\..\\svelteapp1.client",
 "MaxTimeoutInSeconds": "120",
 "KeepRunning": "false"
 }

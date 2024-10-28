@@ -5001,19 +5001,19 @@
     ]
   },
   "packageFolders": {
-    "/home/pablo/.nuget/packages/": {}
+    "C:\\Users\\Pablo\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "/home/pablo/Documents/StoreTemplate/SvelteApp1.Server/SvelteApp1.Server.csproj",
+      "projectUniqueName": "C:\\Users\\Pablo\\RiderProjects\\StoreTemplate\\SvelteApp1.Server\\SvelteApp1.Server.csproj",
       "projectName": "SvelteApp1.Server",
-      "projectPath": "/home/pablo/Documents/StoreTemplate/SvelteApp1.Server/SvelteApp1.Server.csproj",
-      "packagesPath": "/home/pablo/.nuget/packages/",
-      "outputPath": "/home/pablo/Documents/StoreTemplate/SvelteApp1.Server/obj/",
+      "projectPath": "C:\\Users\\Pablo\\RiderProjects\\StoreTemplate\\SvelteApp1.Server\\SvelteApp1.Server.csproj",
+      "packagesPath": "C:\\Users\\Pablo\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\Pablo\\RiderProjects\\StoreTemplate\\SvelteApp1.Server\\obj\\",
       "projectStyle": "PackageReference",
       "configFilePaths": [
-        "/home/pablo/.nuget/NuGet/NuGet.Config"
+        "C:\\Users\\Pablo\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
@@ -5031,6 +5031,11 @@
         "warnAsError": [
           "NU1605"
         ]
+      },
+      "restoreAuditProperties": {
+        "enableAudit": "true",
+        "auditLevel": "low",
+        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -5089,7 +5094,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "/usr/share/dotnet/sdk/8.0.108/PortableRuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.402/PortableRuntimeIdentifierGraph.json"
       }
     }
   }
