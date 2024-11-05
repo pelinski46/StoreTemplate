@@ -47,6 +47,15 @@ export default defineConfig({
     },
     server: {
         proxy: {
+
+            '^/Categories': {
+                target: 'https://localhost:7174/',
+                secure: false
+            },
+            '^/Product': {
+                target: 'https://localhost:7174/',
+                secure: false
+            },
             '^/weatherforecast': {
                 target: 'https://localhost:7174/',
                 secure: false

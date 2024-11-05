@@ -2,6 +2,8 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SvelteApp1.Server.Data;
 using System.Security.Claims;
+using System.Text.Json.Serialization;
+using SvelteApp1.Server.Services;
 
 namespace SvelteApp1.Server
 {
@@ -20,11 +22,12 @@ namespace SvelteApp1.Server
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers().AddJsonOptions(x =>
+                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-
+            builder.Services.AddScoped<ProductService>();
             var app = builder.Build();
 
             app.UseDefaultFiles();
