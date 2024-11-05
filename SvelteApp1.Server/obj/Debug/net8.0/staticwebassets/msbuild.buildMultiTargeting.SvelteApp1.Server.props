@@ -1,3 +1,0 @@
-﻿<Project>
-  <Import Project="..\build\SvelteApp1.Server.props" />
-</Project>
