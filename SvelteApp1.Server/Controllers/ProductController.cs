@@ -17,7 +17,7 @@ namespace SvelteApp1.Server.Controllers
             _productService = productService;
         }
 
-        // GET: api/Products
+        
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
