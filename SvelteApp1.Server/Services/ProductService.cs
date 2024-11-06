@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Bogus;
+using Microsoft.EntityFrameworkCore;
 using SvelteApp1.Server.Data;
 using SvelteApp1.Server.Models;
 
@@ -66,5 +67,26 @@ public class ProductService(ApplicationDbContext context)
     private async Task<bool> ProductExistsAsync(int id)
     {
         return await context.Products.AnyAsync(e => e.Id == id);
+    }
+    
+    public async Task GenerateFakeDataAsync(int count = 50)
+    {
+        var faker = new Faker("es");
+
+        for (var i = 1; i <= count; i++)
+        {
+            var product = new Product
+            {
+                Id = i,
+                Title = faker.Commerce.ProductName(),
+                Description = faker.Commerce.ProductDescription(),
+                Quantity = faker.Random.Number(1, 100),
+                Price = decimal.Parse(faker.Commerce.Price()),
+                CategoryId = faker.Random.Number(1, 5),
+                Image = faker.Image.PicsumUrl()
+            };
+
+            await CreateProductAsync(product); 
+        }
     }
 }
