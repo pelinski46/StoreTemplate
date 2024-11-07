@@ -1,6 +1,10 @@
 <script lang="ts">
     import { navigate } from "svelte-routing";
+    import {Button, Input, Label} from "flowbite-svelte";
+    import { EyeOutline, EyeSlashOutline, EnvelopeSolid } from 'flowbite-svelte-icons';
 
+    let showPassword = false;
+    let showConfirmPassword = false;
     let email: string = "";
     let password: string = "";
     let confirm: string = "";
@@ -10,7 +14,7 @@
     // A simple function to check if an email is valid
 
     function handleLogin() {
-        navigate("/login");
+        navigate("/component/login");
     }
 
     function validateEmail(email: string) {
@@ -55,45 +59,55 @@
 </script>
 
 <div class="box">
-<form on:submit|preventDefault={submitForm}>
-    <div class="table">
-        <div class="row">
-            <div class="col">Email:</div>
-            <div class="col">
-                <input
-                    type="email"
-                    placeholder="Enter your email"
-                    bind:value={email}
-                    on:input={validateForm}
-                />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">Password:</div>
-            <div class="col">
-                <input
-                    type="password"
-                    placeholder="Enter your password"
-                    bind:value={password}
-                    on:input={validateForm}
-                />
-            </div>
-        </div>
-        <div class="row">
-            <div class="col">Password: (confirm)</div>
-            <div class="col">
-                <input
-                    type="password"
-                    placeholder="Confirm your password"
-                    bind:value={confirm}
-                    on:input={validateForm}
-                />
-            </div>
-        </div>
-    </div>
-    <button type="submit">Register</button>
+    <form on:submit|preventDefault={submitForm}>
+        <div class="space-y-4">
 
-    <p>{message}</p>
-</form>
-<button on:click={handleLogin}>Go to Login</button>
+            <!-- Email Field with Envelope Icon -->
+            <div>
+                <Label for="email">Email:</Label>
+                <Input id="email" type="email" placeholder="Enter your email" bind:value={email} size="lg" on:input={validateForm}>
+                    <EnvelopeSolid slot="left" class="w-5 h-5" />
+                </Input>
+            </div>
+
+            <!-- Password Field with Visibility Toggle -->
+            <div>
+                <Label for="password">Password:</Label>
+                <Input id="password" type={showPassword ? 'text' : 'password'} placeholder="Enter your password" bind:value={password} size="lg" on:input={validateForm}>
+                    <button slot="right" on:click={() => (showPassword = !showPassword)} type="button" class="pointer-events-auto">
+                        {#if showPassword}
+                            <EyeOutline class="w-5 h-5" />
+                        {:else}
+                            <EyeSlashOutline class="w-5 h-5" />
+                        {/if}
+                    </button>
+                </Input>
+            </div>
+
+            <!-- Confirm Password Field with Visibility Toggle -->
+            <div>
+                <Label for="confirm">Password (Confirm):</Label>
+                <Input id="confirm" type={showConfirmPassword ? 'text' : 'password'} placeholder="Confirm your password" bind:value={confirm} size="lg" on:input={validateForm}>
+                    <button slot="right" on:click={() => (showConfirmPassword = !showConfirmPassword)} type="button" class="pointer-events-auto">
+                        {#if showConfirmPassword}
+                            <EyeOutline class="w-5 h-5" />
+                        {:else}
+                            <EyeSlashOutline class="w-5 h-5" />
+                        {/if}
+                    </button>
+                </Input>
+            </div>
+
+            <!-- Submit Button -->
+            <Button type="submit" class="w-full mt-4">Register</Button>
+
+            <!-- Message Display -->
+            {#if message}
+                <p class="text-red-500">{message}</p>
+            {/if}
+        </div>
+    </form>
+
+    <!-- Go to Login Button -->
+    <Button on:click={handleLogin} class="mt-4">Go to Login</Button>
 </div>

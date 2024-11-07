@@ -1,6 +1,8 @@
 <script lang="ts">
     import type { Product } from "../Models/Product";
-    import { Input, Label, Button, Modal } from 'flowbite-svelte';
+    import {Input, Label, Button, Modal, Select, Fileupload, Helper} from 'flowbite-svelte';
+    import type {Category} from "../Models/Category";
+    import {onMount} from "svelte";
 
     // Define a new product object with initial empty/default values
     let newProduct: Product = {
@@ -12,11 +14,39 @@
         image: ''
     };
 
-    // Define variables for category modal
-    let newCategory: string = '';
+    let categories: Category[] = [];
+    let newCategory: Category = { name: '' };
     let isCategoryModalOpen = false;
 
-    // Function to create a product
+    
+    async function fetchCategories() {
+        console.log('Fetching products...');
+        const response = await fetch('/Categories'); // Adjusted URL if needed
+        console.log('Response status:', response.status); // Log response status
+
+        if (!response.ok) {
+            throw new Error('Failed to fetch products');
+        }
+
+        try {
+            const data = await response.json();
+            console.log('Fetched data:', data); // Log fetched data
+            return data.$values; // Return the array from $values
+        } catch (error) {
+            console.error('Error parsing JSON:', error);
+            throw new Error('Failed to parse products data');
+        }
+    }
+
+
+    onMount(async () => {
+        try {
+            categories = await fetchCategories(); // Fetch and store categories
+        } catch (error) {
+            console.error('Error during mount:', error);
+        }
+    });
+    
     async function createProduct(newProduct: Product) {
         try {
             const response = await fetch('/Product', {
@@ -29,7 +59,6 @@
             if (response.ok) {
                 const createdProduct = await response.json();
                 console.log('Product created:', createdProduct);
-                // Clear the form after successful creation
                 newProduct = {
                     title: '',
                     description: '',
@@ -38,6 +67,9 @@
                     categoryId: undefined,
                     image: ''
                 };
+
+
+                newProduct = { ...newProduct };
             } else {
                 console.error('Failed to create product');
             }
@@ -56,13 +88,42 @@
     function openCategoryModal() {
         isCategoryModalOpen = true;
     }
-
+    
     // Function to add a new category
-    function addCategory() {
-        console.log('New category added:', newCategory);
-        // Logic to save the new category (e.g., API call)
-        isCategoryModalOpen = false;
-        newCategory = ''; // Reset the category input
+   async function addCategory(event: SubmitEvent) {
+        try {
+            const response = await fetch('/Categories', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newCategory),
+            });
+            if (response.ok) {
+                const createdCategory = await response.json();
+                console.log('New category added:', createdCategory);
+                categories = await fetchCategories();
+                isCategoryModalOpen = false;
+               
+           
+            } else {
+                console.error('Failed to create product');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    }
+
+    function handleImageUpload(event: Event) {
+        const fileInput = event.target as HTMLInputElement;
+        const file = fileInput?.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                newProduct.image = reader.result as string; // Set Base64 string
+            };
+            reader.readAsDataURL(file); // Convert file to Base64
+        }
     }
 </script>
 
@@ -86,17 +147,38 @@
             <Label for="price" class="mb-2">Price</Label>
             <Input type="number" step="0.01" id="price" bind:value={newProduct.price} required placeholder="0.00" />
         </div>
+
+        <div>
+            <Label for="image" class="mb-2">Image</Label>
+            <Fileupload
+                    id="image"
+                    class="mb-2"
+                    accept="image/*"
+                    on:change={handleImageUpload}
+            />
+            <Helper>SVG, PNG, JPG or GIF (MAX. 800x400px).</Helper>
+            {#if newProduct.image}
+                <img src={newProduct.image} alt="Product Image Preview" class="mt-2" />
+            {/if}
+        </div>
         <div class="flex items-center space-x-2">
             <div>
-                <Label for="categoryId" class="mb-2">Category ID</Label>
-                <Input type="number" id="categoryId" bind:value={newProduct.categoryId} required placeholder="1" />
+                <Label for="categoryId" class="mb-2">Category</Label>
+                <Select
+                        id="categoryId"
+                        bind:value={newProduct.categoryId}
+                        required
+                        placeholder="Select a Category"
+                >
+                    
+                    {#each categories as category}
+                        <option value={category.id}>{category.name}</option>
+                    {/each}
+                </Select>
             </div>
             <Button type="button" on:click={openCategoryModal} class="mt-8">Add New Category</Button>
         </div>
-        <div>
-            <Label for="image" class="mb-2">Image URL</Label>
-            <Input type="text" id="image" bind:value={newProduct.image} required placeholder="http://example.com/image.jpg" />
-        </div>
+        
     </div>
 
     <Button type="submit" class="mt-4">Create Product</Button>
@@ -108,7 +190,7 @@
         <h3 class="mb-4 text-xl font-medium text-gray-900 dark:text-white">Add a New Category</h3>
         <Label class="space-y-2">
             <span>Category Name</span>
-            <Input type="text" bind:value={newCategory} placeholder="Enter category name" required />
+            <Input type="text" bind:value={newCategory.name} placeholder="Enter category name" required />
         </Label>
         <div class="flex justify-end">
             <Button type="button" on:click={() => (isCategoryModalOpen = false)} class="text-gray-500">Cancel</Button>

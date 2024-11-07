@@ -26,12 +26,6 @@ import ProductForm from "./components/ProductForm.svelte";
 
 
 <style>
-  /* app.css or a specific style for your layout */
-  .mt-4 {
-    margin-top: 2rem; /* Adjust this value as needed */
-  }
 
-  .space-y-20 > * + * {
-    margin-top: 20px; /* Space between components */
-  }
+  
 </style>
