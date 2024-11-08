@@ -9,6 +9,7 @@ import AuthorizeView from './AuthorizeView.svelte';
 import ProductList from "./components/ProductList.svelte";
 import Layout from "./components/Layout.svelte";
 import ProductForm from "./components/ProductForm.svelte";
+import ProductDescription from "./components/ProductDescription.svelte";
 </script>
 
 
@@ -19,6 +20,7 @@ import ProductForm from "./components/ProductForm.svelte";
       <Route path="/component/login" component={Login}/>
       <Route path="/component/register" component={Register}/>
       <Route path="/products" component={ProductList}/>
+      <Route path="/products/:id" component={ProductDescription} />
       <Route path="/admin" component={ProductForm}/>
     </div>
   </Layout>
