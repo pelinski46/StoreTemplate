@@ -1,17 +1,15 @@
 <script>
-
 import "./app.css";
 import { Router, Route } from 'svelte-routing';
 import Home from './pages/Home.svelte';
 import Login from './pages/Login.svelte';
 import Register from './components/Register.svelte';
-import AuthorizeView from './AuthorizeView.svelte';
 import ProductList from "./components/ProductList.svelte";
 import Layout from "./components/Layout.svelte";
 import ProductForm from "./components/ProductForm.svelte";
 import ProductDescription from "./components/ProductDescription.svelte";
+// import AuthorizeView from './AuthorizeView.svelte';
 </script>
-
 
 <Router>
   <Layout>
@@ -26,8 +24,5 @@ import ProductDescription from "./components/ProductDescription.svelte";
   </Layout>
 </Router>
 
-
 <style>
-
-  
 </style>

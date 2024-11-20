@@ -1,2 +1,3 @@
 /home/pablo/ASP.NET-Core-Svelte/svelteapp1.client/obj/Debug/svelteapp1.client.esproj.CoreCompileInputs.cache
 C:\Users\Pablo\RiderProjects\StoreTemplate\svelteapp1.client\obj\Debug\svelteapp1.client.esproj.CoreCompileInputs.cache
+C:\Users\cm\Documents\Sexo\StoreTemplate\svelteapp1.client\obj\Debug\svelteapp1.client.esproj.CoreCompileInputs.cache
