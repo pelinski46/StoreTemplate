@@ -47,7 +47,7 @@ namespace SvelteApp1.Server
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            app.UseCors("AllowSpecificOrigin");
+            app.UseCors();
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
