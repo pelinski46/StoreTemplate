@@ -15,12 +15,13 @@ namespace SvelteApp1.Server
             var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
             builder.Services.AddCors(options =>
             {
-                options.AddDefaultPolicy(policy =>
+                options.AddPolicy("AllowSpecificOrigin",
+                    policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173") // Replace with your frontend's URL
+                    policy.WithOrigins("http://localhost:5173") 
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials(); // If you're using cookies or tokens
+                        .AllowCredentials(); 
                 });
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
@@ -47,7 +48,7 @@ namespace SvelteApp1.Server
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-            app.UseCors();
+            app.UseCors("AllowSpecificOrigin");
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
