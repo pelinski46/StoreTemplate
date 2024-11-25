@@ -68,7 +68,12 @@ namespace SvelteApp1.Server
                 var email = user.FindFirstValue(ClaimTypes.Email); // get the user's email from the claim
                 return Results.Json(new { Email = email }); ; // return the email as a plain text response
             }).RequireAuthorization();
-
+            app.MapGet("/helloworld", () =>
+                {
+                    return "hola";
+                })
+                .WithName("Helloworld");
+               
 
 
 
