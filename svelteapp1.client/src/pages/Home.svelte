@@ -11,6 +11,4 @@
     
    
 <ProductList />
-<ProductForm />
-<Register/>
-  
+

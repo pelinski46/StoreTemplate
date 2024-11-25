@@ -8,6 +8,7 @@ namespace SvelteApp1.Server.Data
     {
         public DbSet<Product> Products { get; set; } = default!;
         public DbSet<Category> Categories { get; set; } = default!;
+        public DbSet<CartItem> CartItems { get; set; } = default!;
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
          : base(options)
         {
@@ -20,6 +21,11 @@ namespace SvelteApp1.Server.Data
                 .HasMany(c => c.Products)
                 .WithOne(p => p.Category)
                 .HasForeignKey(p => p.CategoryId)
+                .IsRequired();
+            modelBuilder.Entity<CartItem>()
+                .HasOne(ci=>ci.Product)
+                .WithMany(p=>p.CartItems)
+                .HasForeignKey(ci => ci.ProductId)
                 .IsRequired();
 
         }
