@@ -41,7 +41,8 @@ namespace SvelteApp1.Server
             
             builder.Services.AddScoped<ProductService>();
             var app = builder.Build();
-
+            app.UseDefaultFiles();
+            app.UseStaticFiles();
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -66,8 +67,9 @@ namespace SvelteApp1.Server
 
             app.MapGet("/pingauth", (ClaimsPrincipal user) =>
             {
-                var email = user.FindFirstValue(ClaimTypes.Email); // get the user's email from the claim
-                return Results.Json(new { Email = email }); ; // return the email as a plain text response
+                var email = user.FindFirstValue(ClaimTypes.Email);
+                var role = user.FindFirstValue(ClaimTypes.Role);
+                return Results.Json(new { Email = email, Role = role});  // return the email as a plain text response
             }).RequireAuthorization();
             app.MapGet("/helloworld", () =>
                 {
@@ -80,7 +82,7 @@ namespace SvelteApp1.Server
 
             app.MapControllers();
 
-           
+            app.MapFallbackToFile("/index.html");
 
             app.Run();
         }
