@@ -5,8 +5,9 @@ using SvelteApp1.Server.Models;
 
 namespace SvelteApp1.Server.Controllers;
 
+
+[ApiController]
 [Route("[controller]")]
-    [ApiController]
     public class CategoriesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

@@ -13,7 +13,20 @@ namespace SvelteApp1.Server
         {
             var builder = WebApplication.CreateBuilder(args);
             var connectionString = builder.Configuration.GetConnectionString("ApplicationDbContextConnection") ?? throw new InvalidOperationException("Connection string 'ApplicationDbContextConnection' not found.");
-
+            builder.Services.AddCors(options =>
+            {
+                options.AddDefaultPolicy(policy =>
+                {
+                    policy.WithOrigins("http://localhost:5173") // Replace with your frontend's URL
+                        .AllowAnyHeader()
+                        .AllowAnyMethod()
+                        .AllowCredentials(); // If you're using cookies or tokens
+                });
+            });
+            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+            builder.Services.AddEndpointsApiExplorer();
+            builder.Services.AddSwaggerGen();
+            
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
 
             builder.Services.AddAuthorization();
@@ -21,17 +34,12 @@ namespace SvelteApp1.Server
               .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Add services to the container.
-
+            
             builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
-            // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
-            builder.Services.AddEndpointsApiExplorer();
-            builder.Services.AddSwaggerGen();
+            
             builder.Services.AddScoped<ProductService>();
             var app = builder.Build();
-
-            app.UseDefaultFiles();
-            app.UseStaticFiles();
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
@@ -39,7 +47,7 @@ namespace SvelteApp1.Server
                 app.UseSwagger();
                 app.UseSwaggerUI();
             }
-
+            app.UseCors("AllowSpecificOrigin");
             app.UseHttpsRedirection();
 
             app.UseAuthorization();
@@ -66,7 +74,7 @@ namespace SvelteApp1.Server
 
             app.MapControllers();
 
-            app.MapFallbackToFile("/index.html");
+           
 
             app.Run();
         }
