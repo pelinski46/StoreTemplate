@@ -1,0 +1,13 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/.vs/ProjectEvaluation/svelteapp1.metadata.v9.bin
+/.vs/ProjectEvaluation
+/.vs/StoreTemplate/v17
+/.vs/SvelteApp1
+/.vs
+/SvelteApp1.Server/app.db-shm
+/SvelteApp1.Server/app.db-wal
+/SvelteApp1.Server/SvelteApp1.Server.csproj.user
+/svelteapp1.client/obj/Debug/svelteapp1.client.esproj.FileListAbsolute.txt
