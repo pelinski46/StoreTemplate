@@ -67,9 +67,9 @@
                     categoryId: undefined,
                     image: ''
                 };
-
-
-                newProduct = { ...newProduct };
+                
+                // Force reactivity update
+                $: newProduct = newProduct;
             } else {
                 console.error('Failed to create product');
             }

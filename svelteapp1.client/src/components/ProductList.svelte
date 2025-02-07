@@ -1,112 +1,173 @@
 <script lang="ts">
     import { Card, Button, Rating, Badge } from 'flowbite-svelte';
-    import type {Category} from "../Models/Category";
-    import {onMount} from "svelte";
+    import type { Category } from "../Models/Category";
+    import type { Product } from "../Models/Product";
+    import { onMount } from "svelte";
 
+    // Categories
     let categories: Category[] = [];
+    let selectedCategoryId: number | null = null;
+    
+    // Products
+    let products: Product[] = [];
+    let loading = false;
+    let error: Error | null = null;
 
+    // Fetch categories
     async function fetchCategories() {
-        console.log('Fetching products...');
-        const response = await fetch('/Categories'); // Adjusted URL if needed
-        console.log('Response status:', response.status); // Log response status
+        const response = await fetch('/Categories');
+        if (!response.ok) throw new Error('Failed to fetch categories');
+        return (await response.json()).$values;
+    }
 
-        if (!response.ok) {
-            throw new Error('Failed to fetch products');
-        }
+    // Fetch products by category
+    async function fetchProductsByCategory(categoryId: number): Promise<Product[]> {
+        const response = await fetch(`/Product/bycategory/${categoryId}`);
+        if (!response.ok) throw new Error(`Failed to fetch products for category ${categoryId}`);
+        return (await response.json()).$values;
+    }
 
-        try {
-            const data = await response.json();
-            console.log('Fetched data:', data); // Log fetched data
-            return data.$values; // Return the array from $values
-        } catch (error) {
-            console.error('Error parsing JSON:', error);
-            throw new Error('Failed to parse products data');
+    // Fetch all products
+    async function fetchAllProducts(): Promise<Product[]> {
+        const response = await fetch('/Product');
+        if (!response.ok) throw new Error('Failed to fetch products');
+        return (await response.json()).$values;
+    }
+
+    // Handle category selection
+    function handleCategorySelection(categoryId: number) {
+        selectedCategoryId = selectedCategoryId === categoryId ? null : categoryId;
+    }
+
+    // Reactive statement to handle product fetching
+    $: {
+        if (selectedCategoryId !== null) {
+            loadFilteredProducts(selectedCategoryId);
+        } else {
+            loadAllProducts();
         }
     }
 
+    async function loadAllProducts() {
+        try {
+            loading = true;
+            products = await fetchAllProducts();
+            error = null;
+        } catch (e) {
+            error = e as Error;
+            products = [];
+        } finally {
+            loading = false;
+        }
+    }
 
+    async function loadFilteredProducts(categoryId: number) {
+        try {
+            loading = true;
+            const fetchedProducts = await fetchProductsByCategory(categoryId);
+            console.log("Fetched Products:", fetchedProducts); // <-- Revisa en la consola
+            products = fetchedProducts;
+            error = null;
+        } catch (e) {
+            error = e as Error;
+            products = [];
+        } finally {
+            loading = false;
+        }
+    }
+
+    // Load initial data
     onMount(async () => {
         try {
-            categories = await fetchCategories(); // Fetch and store categories
-        } catch (error) {
-            console.error('Error during mount:', error);
+            loading = true;
+            categories = await fetchCategories();
+            await loadAllProducts();
+        } catch (e) {
+            error = e as Error;
+        } finally {
+            loading = false;
         }
     });
-    async function getProducts() {
-        console.log('Fetching products...');
-        const response = await fetch('/Product'); // Adjusted URL if needed
-        console.log('Response status:', response.status); // Log response status
-
-        if (!response.ok) {
-            throw new Error('Failed to fetch products');
-        }
-
-        try {
-            const data = await response.json();
-            console.log('Fetched data:', data); // Log fetched data
-            return data.$values; // Return the array from $values
-        } catch (error) {
-            console.error('Error parsing JSON:', error);
-            throw new Error('Failed to parse products data');
-        }
-    }
 </script>
-
-
 
 <style>
     .product-grid {
         display: grid;
         grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-        gap: 20px; /* Space between cards */
+        gap: 20px;
+    }
+    
+    .category-item.selected {
+        background-color: #f3f4f6;
     }
 </style>
 
 <div class="flex flex-col lg:flex-row">
-    <!-- Sidebar for Category Filter -->
-    <div class="flex-0 p-4">
-        <Card class="p-4 w-full shadow-md">
-            <h2 class="text-xl font-semibold pb-1">Categories</h2>
-            <div class="space-y-2">
-                {#each categories as category}
-                    <div
-                            class="cursor-pointer px-4 py-2 rounded-full border text-sm font-semibold bg-gray-200 text-gray-700"
-                            on:click={() => console.log(category.name)}
+    <!-- Category Filter Sidebar -->
+    <aside class="w-full lg:w-64 h-screen p-4 bg-white border-r border-gray-200">
+        <h2 class="text-xl font-bold mb-4">Filter by Category</h2>
+        <div class="space-y-2">
+            {#each categories as category}
+                <div 
+                    class="flex items-center p-2 hover:bg-gray-50 rounded cursor-pointer {selectedCategoryId === category.id ? 'selected' : ''}"
+                    on:click={() => handleCategorySelection(category.id)}
+                >
+                    <input 
+                        type="radio" 
+                        id={category.id.toString()} 
+                        checked={selectedCategoryId === category.id}
+                        class="w-4 h-4 text-blue-600 bg-gray-100 border-gray-300 rounded-full focus:ring-blue-500"
+                    />
+                    <label 
+                        for={category.id.toString()} 
+                        class="ms-2 text-sm font-medium text-gray-900"
                     >
                         {category.name}
-                    </div>
-                {/each}
-            </div>
-        </Card>
-    </div>
-    <!-- Product Grid Section -->
-    {#await getProducts()}
-        <h2>Loading...</h2>
-    {:then products}
-        <div class="flex-1 p-4">
-            <div class="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
-                {#each products as product}
-                    <Card padding="none">
-                        <a href="/">
-                            <img class="p-8 rounded-t-lg" src={product.image || '/images/default-product.jpg'} alt={product.title} />
-                        </a>
-                        <div class="px-5 pb-5">
-                            <a href="/">
-                                <h5 class="text-xl font-semibold tracking-tight text-gray-900 dark:text-white">{product.title}</h5>
-                            </a>
-                            <Rating rating={product.rating || 0} size={24} class="mt-2.5 mb-5">
-                                <Badge slot="text" class="ms-3">{product.rating || 'N/A'}</Badge>
-                            </Rating>
-                            <div class="flex justify-between items-center">
-                                <span class="text-3xl font-bold text-gray-900 dark:text-white">${product.price.toFixed(2)}</span>
-                                <Button href="/">Buy now</Button>
-                            </div>
-                        </div>
-                    </Card>
-                {/each}
-            </div>
+                    </label>
+                </div>
+            {/each}
         </div>
-    {:catch error}
-        <p>Error loading products: {error.message}</p>
-    {/await}
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 min-h-screen bg-gray-50">
+        {#if loading}
+            <div class="p-8 text-center">Loading products...</div>
+        {:else if error}
+            <div class="p-8 text-red-600">Error: {error.message}</div>
+        {:else if products.length === 0}
+            <div class="p-8 text-center text-gray-500">
+                {selectedCategoryId ? 'No products found in this category' : 'No products available'}
+            </div>
+        {:else}
+            <div class="p-4 lg:p-8">
+                <div class="product-grid grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
+                    {#each products as product}
+                        <Card padding="none">
+                            <a href="/">
+                                <img class="p-8 rounded-t-lg" src={product.image || '/images/default-product.jpg'} 
+                                     alt={product.title} />
+                            </a>
+                            <div class="px-5 pb-5">
+                                <a href="/">
+                                    <h5 class="text-xl font-semibold tracking-tight text-gray-900">
+                                        {product.title}
+                                    </h5>
+                                </a>
+                                <Rating rating={product.rating || 0} size={24} class="mt-2.5 mb-5">
+                                    <Badge slot="text" class="ms-3">{product.rating || 'N/A'}</Badge>
+                                </Rating>
+                                <div class="flex justify-between items-center">
+                                    <span class="text-3xl font-bold text-gray-900">
+                                        ${product.price.toFixed(2)}
+                                    </span>
+                                    <Button href="/">Buy now</Button>
+                                </div>
+                            </div>
+                        </Card>
+                    {/each}
+                </div>
+            </div>
+        {/if}
+    </main>
 </div>

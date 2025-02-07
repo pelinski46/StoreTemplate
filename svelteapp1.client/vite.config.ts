@@ -6,10 +6,14 @@ import fs from 'fs';
 import path from 'path';
 import child_process from 'child_process';
 
-/*const baseFolder =
+const baseFolder =
     process.env.APPDATA !== undefined && process.env.APPDATA !== ''
         ? `${process.env.APPDATA}/ASP.NET/https`
         : `${process.env.HOME}/.aspnet/https`;
+
+if (!fs.existsSync(baseFolder)) {
+    fs.mkdirSync(baseFolder, { recursive: true });
+}
 
 const certificateArg = process.argv.map(arg => arg.match(/--name=(?<value>.+)/i)).filter(Boolean)[0];
 const certificateName = certificateArg ? certificateArg.groups.value : "svelteapp1.client";
@@ -34,7 +38,7 @@ if (!fs.existsSync(certFilePath) || !fs.existsSync(keyFilePath)) {
     ], { stdio: 'inherit', }).status) {
         throw new Error("Could not create certificate.");
     }
-}*/
+}
 
 // https://vitejs.dev/config/
 export default defineConfig({
@@ -47,6 +51,10 @@ export default defineConfig({
     },
     server: {
         proxy: {
+            '^/Product/bycategory': {
+                target: 'https://localhost:7174/',
+                secure: false
+            },
 
             '^/Categories': {
                 target: 'https://localhost:7174/',
@@ -78,8 +86,10 @@ export default defineConfig({
             }
         },
         port: 5173,
-        https: 
-            false,
+        https: {
+            key: fs.readFileSync(keyFilePath),
+            cert: fs.readFileSync(certFilePath),
+        }
         
     }
 })

@@ -1,9 +1,11 @@
+using System.Security.Claims;
+using System.Text.Json.Serialization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using SvelteApp1.Server.Data;
-using System.Security.Claims;
-using System.Text.Json.Serialization;
-using SvelteApp1.Server.Services;
+using SvelteApp1.Server.Services.CartItems;
+using SvelteApp1.Server.Services.Categories;
+using SvelteApp1.Server.Services.Products;
 
 namespace SvelteApp1.Server
 {
@@ -18,16 +20,16 @@ namespace SvelteApp1.Server
                 options.AddPolicy("AllowSpecificOrigin",
                     policy =>
                 {
-                    policy.WithOrigins("http://localhost:5173") 
+                    policy.WithOrigins("http://localhost:5173")
                         .AllowAnyHeader()
                         .AllowAnyMethod()
-                        .AllowCredentials(); 
+                        .AllowCredentials();
                 });
             });
             // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
             builder.Services.AddEndpointsApiExplorer();
             builder.Services.AddSwaggerGen();
-            
+
             builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
 
             builder.Services.AddAuthorization();
@@ -35,11 +37,14 @@ namespace SvelteApp1.Server
               .AddEntityFrameworkStores<ApplicationDbContext>();
 
             // Add services to the container.
-            
+
             builder.Services.AddControllers().AddJsonOptions(x =>
                 x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.Preserve);
-            
-            builder.Services.AddScoped<ProductService>();
+
+            builder.Services.AddScoped<IProductService, ProductService>();
+            builder.Services.AddScoped<ICategoriesService, CategoriesService>();
+            builder.Services.AddScoped<CartService>();
+
             var app = builder.Build();
             app.UseDefaultFiles();
             app.UseStaticFiles();
@@ -69,14 +74,14 @@ namespace SvelteApp1.Server
             {
                 var email = user.FindFirstValue(ClaimTypes.Email);
                 var role = user.FindFirstValue(ClaimTypes.Role);
-                return Results.Json(new { Email = email, Role = role});  // return the email as a plain text response
+                return Results.Json(new { Email = email, Role = role });  // return the email as a plain text response
             }).RequireAuthorization();
             app.MapGet("/helloworld", () =>
                 {
                     return "hola";
                 })
                 .WithName("Helloworld");
-               
+
 
 
 

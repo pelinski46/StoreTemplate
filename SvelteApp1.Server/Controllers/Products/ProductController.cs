@@ -1,48 +1,43 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using SvelteApp1.Server.Models;
-using SvelteApp1.Server.Services;
+using SvelteApp1.Server.Services.Products;
 
-namespace SvelteApp1.Server.Controllers
+namespace SvelteApp1.Server.Controllers.Products
 {
-    
+
     [ApiController]
     [Route("[controller]")]
     public class ProductController : ControllerBase
     {
-        private readonly ProductService _productService;
+        private readonly IProductService _productService;
 
-        public ProductController(ProductService productService)
+        public ProductController(IProductService productService)
         {
             _productService = productService;
         }
 
-        // GET: api/Products
+        // GET: api/Product
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Product>>> GetProducts()
         {
             var products = await _productService.GetProductsAsync();
             return Ok(products);
         }
-        
-        // GET: api/Products/bycategory/{categoryId}
+
+        // GET: api/Product/bycategory/{categoryId}
         [HttpGet("bycategory/{categoryId}")]
         public async Task<ActionResult<IEnumerable<Product>>> GetProductsByCategory(int categoryId)
         {
             var products = await _productService.GetProductsByCategoryAsync(categoryId);
             return Ok(products);
         }
-        
+
         // GET: api/Products/5
         [HttpGet("{id:int}")]
         public async Task<ActionResult<Product>> GetProduct(int id)
         {
             var product = await _productService.GetProductByIdAsync(id);
-
-            if (false)
-            {
-                return NotFound();
-            }
 
             return product;
         }

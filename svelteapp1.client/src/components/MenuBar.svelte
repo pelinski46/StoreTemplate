@@ -10,6 +10,7 @@
         TextPlaceholder,
         Button, Input
     } from 'flowbite-svelte';
+    import {  HomeSolid, DropboxSolid, UserSettingsOutline, UserOutline, FileChartBarSolid } from 'flowbite-svelte-icons';
     import ProductList from "../components/ProductList.svelte";
     import ProductForm from "../components/ProductForm.svelte";
     import svelteLogo from '../assets/svelte.svg';
@@ -18,27 +19,54 @@
 </script>
 
 
-<Navbar class="px-2 sm:px-4 py-2.5 fixed w-full z-20 top-0 start-0 border-b mb-4">
-    <NavBrand href="/">
-        <img src={svelteLogo} class="me-3 h-6 sm:h-9" alt="Flowbite Logo" />
-        <span class="self-center whitespace-nowrap text-xl font-semibold dark:text-white">Tienda</span>
+<Navbar class="px-4 sm:px-6 py-3 fixed w-full z-20 top-0 start-0 border-b border-gray-100 shadow-md bg-gradient-to-r from-blue-600 to-purple-600">
+    <NavBrand href="/" class="hover:scale-105 transition-transform">
+        <img src={svelteLogo} class="h-8 sm:h-10 mr-2 filter drop-shadow-lg" alt="Store Logo" />
+        <span class="self-center text-2xl font-bold text-white drop-shadow-md">TechTrend</span>
     </NavBrand>
-    <div class="flex md:order-2">
-        <Button color="none" data-collapse-toggle="mobile-menu-3" aria-controls="mobile-menu-3" aria-expanded="false" class="md:hidden text-gray-500 dark:text-gray-400 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:ring-4 focus:ring-gray-200 dark:focus:ring-gray-700 rounded-lg text-sm p-2.5 me-1">
-            <SearchOutline class="w-5 h-5" />
-        </Button>
-        <div class="hidden relative md:block">
-            <div class="flex absolute inset-y-0 start-0 items-center ps-3 pointer-events-none">
-                <SearchOutline class="w-4 h-4" />
+    
+    <div class="flex items-center md:order-2 space-x-4">
+        <!-- Enhanced Search -->
+        <div class="hidden md:flex relative group">
+            <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                <SearchOutline class="w-5 h-5 text-gray-400 group-focus-within:text-blue-500 transition-colors" />
             </div>
-            <Input id="search-navbar" class="ps-10" placeholder="Search..." />
+            <Input 
+                id="search-navbar" 
+                class="pl-10 pr-4 py-2.5 rounded-full bg-white/90 backdrop-blur-sm border-0 focus:ring-2 focus:ring-white w-64 transition-all" 
+                placeholder="Search products..." 
+            />
         </div>
-        <NavHamburger />
+
+        <!-- Auth Buttons -->
+        <div class="hidden md:flex space-x-2">
+            <Link href="/component/register">
+                <Button color="alternative" class="text-white hover:bg-white/10 px-4 py-2.5 rounded-full transition-colors">
+                    <UserOutline class="w-5 h-5 mr-2" />
+                    Sign Up
+                </Button>
+            </Link>
+        </div>
+
+        <NavHamburger class="text-white hover:bg-white/10 md:hidden" />
     </div>
-    <NavUl>
-        <NavLi href="/">Inicio</NavLi>
-        <NavLi href="/products">Productos</NavLi>
-        <NavLi href="/admin">Administrador</NavLi>
-        <NavLi href="/component/register">Registrarse</NavLi>
+
+    <NavUl class="md:space-x-1">
+        <NavLi href="/" class="text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors">
+            <HomeSolid class="w-5 h-5 mr-2" />
+            Home
+        </NavLi>
+        <NavLi href="/products" class="text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors">
+            <DropboxSolid class="w-5 h-5 mr-2" />
+            Products
+        </NavLi>
+        <NavLi href="/admin" class="text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors">
+            <FileChartBarSolid class="w-5 h-5 mr-2" />
+            Dashboard
+        </NavLi>
+        <NavLi href="/settings" class="text-white hover:bg-white/10 px-4 py-2 rounded-lg transition-colors">
+            <UserSettingsOutline class="w-5 h-5 mr-2" />
+            Settings
+        </NavLi>
     </NavUl>
 </Navbar>
